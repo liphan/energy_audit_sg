@@ -1,0 +1,14 @@
+{
+    "name": "Energy Audit SG",
+    "description": "App for energy audit of Singapore commercial building",
+    "repository": "https://github.com/liphan/energy_audit_sg",
+    "keywords": [
+        "python",
+        "Flask",
+        "energy audit"
+    ],
+    "addons": [
+        "heroku-postgresql"
+    ],
+    "generator": "https://www.expeditedssl.com/heroku-button-maker"
+}
