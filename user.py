@@ -43,7 +43,7 @@ from werkzeug import generate_password_hash, check_password_hash
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:admin@localhost:5432/audit'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://ynmfoitwdrfufl:fcdc5a2eff67d02812cab4bda26e1bff1d4b050aa09b54c0b7c730ea93a5c0b5@ec2-54-221-255-153.compute-1.amazonaws.com:5432/d6rmmhfa7ijsat?sslmode=require'   # ?sslmode=require
 #from models import db
-db = SQLAlchemy()
+db = SQLAlchemy(app)
 
 # db.create_all()
 # db.session.commit()
@@ -71,7 +71,7 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.pwdhash, password)
 
-db.init_app(app)
+# db.init_app(app)
 
 #import app.routes
 
