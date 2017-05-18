@@ -21,15 +21,15 @@ from flask_mail import Message, Mail
 from flask import Flask
 
 app = Flask(__name__)
- 
+
 app.secret_key = 'development key'
- 
+
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 465
 app.config["MAIL_USE_SSL"] = True
 app.config["MAIL_USERNAME"] = 'mgresap@gmail.com'      # 'contact@example.com'
 app.config["MAIL_PASSWORD"] = 'wevxbgm1'               # 'your-password'
- 
+
 
 #from routes import mail
 mail = Mail()
@@ -37,9 +37,10 @@ mail = Mail()
 mail.init_app(app)
 
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug import generate_password_hash, check_password_hash 
+from werkzeug import generate_password_hash, check_password_hash
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:admin@localhost:5432/audit'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:admin@localhost:5432/audit'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://ynmfoitwdrfufl:fcdc5a2eff67d02812cab4bda26e1bff1d4b050aa09b54c0b7c730ea93a5c0b5@ec2-54-221-255-153.compute-1.amazonaws.com:5432/d6rmmhfa7ijsat?sslmode=require'
 #from models import db
 db = SQLAlchemy()
 
@@ -56,7 +57,7 @@ class User(db.Model):
     pwdhash = db.Column(db.String(54))
 
     def __init__(self, firstname, lastname, email, mobile, password):
-        
+
         self.firstname = firstname.title()
         self.lastname = lastname.title()
         self.email = email.lower()
@@ -77,51 +78,51 @@ db.init_app(app)
 # In[68]:
 
 class SignupForm(Form):
-    
+
     firstname = StringField("First name",  [validators.DataRequired("Please enter your first name.")])
     lastname = StringField("Last name",  [validators.DataRequired("Please enter your last name.")])
-    email = StringField("Email",  [validators.DataRequired("Please enter your email address."), 
+    email = StringField("Email",  [validators.DataRequired("Please enter your email address."),
                                  validators.Email("Please enter your email address.")])
     #password = PasswordField('Password', [validators.Required("Please enter a password.")])
     mobile = StringField('Mobile', [validators.DataRequired(), validators.Length(min=8, max=8)])#country_code='SG', display_format='national')
 
-    password = PasswordField('New Password', [validators.DataRequired("Please enter a password.")])#, 
+    password = PasswordField('New Password', [validators.DataRequired("Please enter a password.")])#,
 #                                               validators.EqualTo('confirm', message='Passwords must match')])
 #     confirm = PasswordField('Repeat Password')
-#     accept_tos = BooleanField('I accept the Terms of Service and Privacy Notice (updated Jan 22, 2015)', 
+#     accept_tos = BooleanField('I accept the Terms of Service and Privacy Notice (updated Jan 22, 2015)',
 #                               [validators.DataRequired()])
-    
+
     submit = SubmitField("Create account")
 
 
 # class RegistrationForm(Form):
 #     firstname = TextField("First name",  [validators.Required("Please enter your first name.")])
 #     lastname = TextField("Last name",  [validators.Required("Please enter your last name.")])
-#     email = TextField("Email address",  [validators.Required("Please enter your email address."), 
+#     email = TextField("Email address",  [validators.Required("Please enter your email address."),
 #                                          validators.Email("Please enter your email address.")])
 #     #username = TextField('Username', [validators.Length(min=4, max=20)])
 #     #email = TextField('Email Address', [validators.Length(min=6, max=50)])
-#     password = PasswordField('New Password', [validators.Required("Please enter a password."), 
+#     password = PasswordField('New Password', [validators.Required("Please enter a password."),
 #                                               validators.EqualTo('confirm', message='Passwords must match')])
 #     confirm = PasswordField('Repeat Password')
-#     accept_tos = BooleanField('I accept the Terms of Service and Privacy Notice (updated Jan 22, 2015)', 
+#     accept_tos = BooleanField('I accept the Terms of Service and Privacy Notice (updated Jan 22, 2015)',
 #                               [validators.Required()])
     #submit = SubmitField("Create account")
-    
+
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)
- 
+
     def validate(self):
         if not Form.validate(self):
             return False
-     
+
         user = User.query.filter_by(email = self.email.data.lower()).first()
         if user:
             self.email.errors.append("That email is already taken")
             return False
         else:
             return True
-        
+
 
 class SigninForm(Form):
     email = TextField("Email",  [validators.DataRequired("Please enter your email address."), validators.Email("Please enter your email address.")])
@@ -132,7 +133,7 @@ class SigninForm(Form):
         Form.__init__(self, *args, **kwargs)
 
     def validate(self):
-        if not Form.validate(self):   
+        if not Form.validate(self):
             return False
 
         user = User.query.filter_by(email = self.email.data.lower()).first()
@@ -141,7 +142,7 @@ class SigninForm(Form):
         else:
             self.email.errors.append("Invalid e-mail or password")
             return False
-      
+
 
 class ContactForm(Form):
     name = TextField("Name",  [validators.DataRequired("Please enter your name.")])
@@ -155,9 +156,9 @@ class ContactForm(Form):
 # In[69]:
 
 @app.route('/')
-def home():  
+def home():
     return render_template('home.html')
-  
+
 @app.route('/about')
 def about():
     return render_template('about.html')
@@ -165,7 +166,7 @@ def about():
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     form = ContactForm()
- 
+
     if request.method == 'POST':
         if form.validate() == False:
             flash('All fields are required.')
@@ -178,9 +179,9 @@ def contact():
             """ % (form.name.data, form.email.data, form.message.data)
 
             mail.send(msg)
-    
+
             return 'Form posted.'
- 
+
     elif request.method == 'GET':
         return render_template('contact.html', form=form)
 
@@ -194,21 +195,21 @@ def contact():
 #mail = Mail()
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    
-    form = SignupForm() 
-    
+
+    form = SignupForm()
+
     if 'email' in session:
-        return redirect(url_for('profile')) 
+        return redirect(url_for('profile'))
 
 
     if request.method == 'POST':
-        
+
         if form.validate() == False:
-            
+
             return render_template('signup.html', form=form)
         else:
-            
-            newuser = User(form.firstname.data, form.lastname.data, form.email.data, form.mobile.data, 
+
+            newuser = User(form.firstname.data, form.lastname.data, form.email.data, form.mobile.data,
                            form.password.data)
             db.session.add(newuser)
             db.session.commit()
@@ -227,9 +228,9 @@ def signup():
 def profile():
     if 'email' not in session:
         return redirect(url_for('signin'))
- 
+
     user = User.query.filter_by(email = session['email']).first()
- 
+
     if user is None:
         return redirect(url_for('signin'))
     else:
@@ -243,9 +244,9 @@ def profile():
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
     form = SigninForm()
-    
+
     if 'email' in session:
-        return redirect(url_for('profile')) 
+        return redirect(url_for('profile'))
 
     if request.method == 'POST':
         if form.validate() == False:
@@ -262,10 +263,10 @@ def signin():
 
 @app.route('/signout')
 def signout():
- 
+
   if 'email' not in session:
     return redirect(url_for('signin'))
-     
+
   session.pop('email', None)
   return redirect(url_for('home'))
 
@@ -298,7 +299,7 @@ def signout():
 #             else:
 #                 c.execute("INSERT INTO users (username, password, email, tracking) VALUES (%s, %s, %s, %s)",
 #                           (thwart(username), thwart(password), thwart(email), thwart("/introduction-to-python-programming/")))
-                
+
 #                 conn.commit()
 #                 flash("Thanks for registering!")
 #                 c.close()
@@ -323,6 +324,3 @@ if __name__ == "__main__":
 
 
 # In[ ]:
-
-
-
