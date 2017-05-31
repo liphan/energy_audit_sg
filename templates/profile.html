@@ -3,5 +3,60 @@
   <div class="jumbo">
     <h2>Profile<h2>
     <h3>This is {{ session['email'] }}'s profile page<h3>
+
+      <!-- <div class="col-sm-8"> -->
+        <h1>Enter Building Information</h1>
+
+        <form role="form" method='POST' action='{{ url_for('profile') }}'>
+          <div class="form-group">
+            <input type="text" name="file location" class="form-control" placeholder="location path of data file" style="max-width: 300px;" autofocus required>
+            <input type="text" name="project ref" class="form-control" placeholder="project reference indicated in CORENET submission" style="max-width: 300px;" autofocus required>
+            <input type="text" name="building name" class="form-control" placeholder="name of building" style="max-width: 300px;" autofocus required>
+            <input type="text" name="building address" class="form-control" placeholder="address of building" style="max-width: 300px;" autofocus required>
+            <input type="text" name="postal code" class="form-control" placeholder="postal code" style="max-width: 300px;" autofocus required>
+            <input type="text" name="building type" class="form-control" placeholder="type of building" style="max-width: 300px;" autofocus required>
+            <input type="text" name="building age" class="form-control" placeholder="age of building" style="max-width: 300px;" autofocus required>
+            <input type="text" name="last audit date" class="form-control" placeholder="Date of last Energy Audit Submission" style="max-width: 300px;" autofocus required>
+            <input type="text" name="gross floor area" class="form-control" placeholder="Gross floor area, m2 " style="max-width: 300px;" autofocus required>
+            <input type="text" name="air-conditioned area" class="form-control" placeholder="Air conditioned area, m2" style="max-width: 300px;" autofocus required>
+            <input type="text" name="guest rooms" class="form-control" placeholder="Number of guest rooms (for hotels/service apartments) " style="max-width: 300px;" autofocus required>
+            <input type="text" name="auditor" class="form-control" placeholder=" PE(Mechanical) / Energy Auditor Name" style="max-width: 300px;" autofocus required>
+            <input type="text" name="owner" class="form-control" placeholder="Owner Name/ MCST" style="max-width: 300px;" autofocus required>
+
+            <input type="text" name="plant loc" class="form-control" placeholder="Chilled water plant location" style="max-width: 300px;" autofocus required>
+            <input type="text" name="audit start" class="form-control" placeholder="Audit start date" style="max-width: 300px;" autofocus required>
+            <input type="text" name="audit end" class="form-control" placeholder="Audit end date" style="max-width: 300px;" autofocus required>
+            <input type="text" name="notice" class="form-control" placeholder="Notice date served by BCA" style="max-width: 300px;" autofocus required>
+            <input type="text" name="submission" class="form-control" placeholder="Submission deadline in BCA notice" style="max-width: 300px;" autofocus required>
+
+            <input type="number" step="0.01" name="chiller cap" class="form-control" placeholder="Chiller capacity (each)" style="max-width: 300px;" autofocus required>
+            <input type="number" name="chiller qty" class="form-control" placeholder="Chiller operating quantity" style="max-width: 300px;" autofocus required>
+            <input type="number" step="0.01" name="chwp flow" class="form-control" placeholder="CHWP rated flow" style="max-width: 300px;" autofocus required>
+            <input type="number" step="0.01" name="chwp head" class="form-control" placeholder="CHWP rated head" style="max-width: 300px;" autofocus required>
+            <input type="number" name="chwp qty" class="form-control" placeholder="CHWP operating quantity" style="max-width: 300px;" autofocus required>
+            <input type="number" step="0.01" name="chwp motor effy" class="form-control" placeholder="CHWP motor efficiency" style="max-width: 300px;" autofocus required>
+            <input type="number" step="0.01" name="chwp pump effy" class="form-control" placeholder="CHWP pump efficiency" style="max-width: 300px;" autofocus required>
+
+            <input type="number" step="0.01" name="cwp flow" class="form-control" placeholder="CWP rated flow" style="max-width: 300px;" autofocus required>
+            <input type="number" step="0.01" name="cwp head" class="form-control" placeholder="CWP rated head" style="max-width: 300px;" autofocus required>
+            <input type="number" name="cwp qty" class="form-control" placeholder="CWP operating quantity" style="max-width: 300px;" autofocus required>
+            <input type="number" step="0.01" name="cwp motor effy" class="form-control" placeholder="CWP motor efficiency" style="max-width: 300px;" autofocus required>
+            <input type="number" step="0.01" name="cwp pump effy" class="form-control" placeholder="CWP pump efficiency" style="max-width: 300px;" autofocus required>
+
+            <input type="number" step="0.01" name="ct cap" class="form-control" placeholder="Cooling tower capacity" style="max-width: 300px;" autofocus required>
+            <input type="number" name="ct qty" class="form-control" placeholder="Cooling tower operating quantity" style="max-width: 300px;" autofocus required>
+            <input type="number" name="ct fan qty" class="form-control" placeholder="Cooling tower fan quantity" style="max-width: 300px;" autofocus required>
+            <input type="number" step="0.01" name="flow each fan" class="form-control" placeholder="flow each fan" style="max-width: 300px;" autofocus required>
+            <input type="number"  step="0.01" name="absorbed fan power" class="form-control" placeholder="absorbed fan power" style="max-width: 300px;" autofocus required>
+
+
+
+
+            <!-- <input type="text" name="num2" class="form-control" placeholder="Enter a valid number" style="max-width: 300px;" autofocus required> -->
+          </div>
+          <button type="submit" class="btn btn-default">Generate Report !</button>
+        </form>
+      <!-- </div> -->
+
   </div>
 {% endblock %}

@@ -1,2 +1,2 @@
-web: gunicorn user:app
+web: gunicorn application:app
  --log-file=-
