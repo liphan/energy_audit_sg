@@ -4,3 +4,7 @@ scipy
 nltk
 scikit-learn
 matplotlib
+Tempita
+SQLAlchemy
+WTForms
+Werkzeug
