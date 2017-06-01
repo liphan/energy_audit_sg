@@ -12,9 +12,7 @@ itsdangerous==0.24
 Jinja2==2.9.6
 MarkupSafe==1.0
 matplotlib==2.0.2
-numpy==1.12.1
 packaging==16.8
-pandas==0.20.1
 psycopg2==2.7.1
 pyparsing==2.2.0
 python-dateutil==2.6.0
