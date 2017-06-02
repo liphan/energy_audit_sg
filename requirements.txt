@@ -24,4 +24,4 @@ SQLAlchemy==1.1.9
 Tempita==0.5.2
 Werkzeug==0.12.1
 WTForms==2.1
-conda=4.3.16
+conda==4.3.16
