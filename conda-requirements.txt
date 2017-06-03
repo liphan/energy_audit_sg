@@ -3,7 +3,7 @@
 # platform: win-64
 _license=1.1=py27_1
 alabaster=0.7.10=py27_0
-anaconda=4.3.16=np112py27_0
+anaconda=4.4.0=np112py27_0
 anaconda-client=1.6.3=py27_0
 anaconda-navigator=1.6.2=py27_0
 anaconda-project=0.6.0=py27_0

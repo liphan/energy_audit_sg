@@ -266,7 +266,7 @@ def profile():
     else:
 #         return render_template('profile.html')
 
-    
+
         if request.method == "POST":
             path = request.form['file location']
             ref = request.form['project ref']
@@ -314,7 +314,7 @@ def profile():
 
     # prepare pandas dataframe for plots
             directory = os.path.dirname(path)
-        
+
             df = pd.read_csv(path)
 
             df['date'] = pd.to_datetime(df['date'])
@@ -334,11 +334,11 @@ def profile():
 
             total_kwe = df['chiller kwe'].sum()
             total_cooling = round(df['heat gain rt'].sum(), 2)
-            total_heat_reject = round(df['heat rejected rt'].sum(), 2) 
+            total_heat_reject = round(df['heat rejected rt'].sum(), 2)
             plant_effy = round((total_kwe / total_cooling), 2)
             total_count = len(df)
             results = df['% heat balance']
-            success_count = 0 
+            success_count = 0
             for result in results:
                 if result > -5 and result < 5:
                     success_count += 1
@@ -349,7 +349,7 @@ def profile():
             below_minus_5_percent_count = 0
             for result in results:
                 if result < -5:
-                    below_minus_5_percent_count += 1        
+                    below_minus_5_percent_count += 1
             percent_heatbal_plusminus5percent = round((float(success_count) / total_count) * 100)
 
             days = df['day of week'].unique()
@@ -365,23 +365,23 @@ def profile():
             df['chwp head'] = (((df['chw l/sec']/chwp_operating_qty)/chwp_rated_flow)**2) * chwp_rated_head
 
 
-            df['chwp kwe'] = (df['chw l/sec']*9810*df['chwp head']/chwp_operating_qty)/((chwp_motor_effy/100) * 
+            df['chwp kwe'] = (df['chw l/sec']*9810*df['chwp head']/chwp_operating_qty)/((chwp_motor_effy/100) *
                                                                                         (chwp_pump_effy/100) * 10**6)
             df['chwp kw/rt'] = df['chwp kwe'] / df['heat gain rt']
 
             df['cwp head'] = (((df['cw l/sec']/cwp_operating_qty)/cwp_rated_flow)**2) * cwp_rated_head
-            df['cwp kwe'] = (df['cw l/sec']*9810*df['cwp head']/cwp_operating_qty)/((cwp_motor_effy/100) * 
+            df['cwp kwe'] = (df['cw l/sec']*9810*df['cwp head']/cwp_operating_qty)/((cwp_motor_effy/100) *
                                                                                     (cwp_pump_effy/100) * 10**6)
             df['cwp kw/rt'] = df['cwp kwe'] / df['heat gain rt']
 
-            df['ct_cap_ratio_needed'] = df['heat rejected kw'] / total_ct_cap    
+            df['ct_cap_ratio_needed'] = df['heat rejected kw'] / total_ct_cap
             df['fan power needed'] = full_fan_power * df['ct_cap_ratio_needed']
             df['ct kw/rt'] = df['fan power needed'] / df['heat gain rt']
 
-            df['plant effy'] = (df['chiller kwe'] + df['chwp kwe']*chwp_operating_qty 
+            df['plant effy'] = (df['chiller kwe'] + df['chwp kwe']*chwp_operating_qty
                                       + df['cwp kwe']*cwp_operating_qty + df['fan power needed']) / df['heat gain rt']
 
-    # cooling load profile plot 
+    # cooling load profile plot
 
     #         %matplotlib inline
 
@@ -399,7 +399,7 @@ def profile():
             fig, ax = plt.subplots(1, 1,
                                    figsize=(9.5, 6))
             xfmt = mdates.DateFormatter('%H:%M:%S')
-            ax.xaxis.set_major_formatter(xfmt) 
+            ax.xaxis.set_major_formatter(xfmt)
             ax.xaxis_date()
 
             ax.plot(dfp)
@@ -408,7 +408,7 @@ def profile():
                    ylabel='Cooling Load (RT)',
                    title=('Cooling Load Profile [%s - %s]')%(audit_start, audit_end))
 
-            ax.legend(dfp.columns, loc='best') #loc=2 
+            ax.legend(dfp.columns, loc='best') #loc=2
             fig.autofmt_xdate()
 
             # Draw a horizontal line showing the mean
@@ -425,7 +425,7 @@ def profile():
                         )
             path_clp = os.path.join(directory, 'cooling load profile.png')
             plt.savefig(path_clp)
- 
+
     #         chw temp plot
 
             dfp_chws = df.pivot(index='time', columns='day of week', values='chws temp')
@@ -439,7 +439,7 @@ def profile():
 
             fig, ax = plt.subplots(1, 1, figsize=(9.5, 6))
             xfmt = mdates.DateFormatter('%H:%M:%S')
-            ax.xaxis.set_major_formatter(xfmt) 
+            ax.xaxis.set_major_formatter(xfmt)
             ax.xaxis_date()
 
             ax.plot(dfp_chw)
@@ -447,12 +447,12 @@ def profile():
             ax.set_ylabel('Temperature (degC)')
             ax.set_title('CHW Temperature')
             ax.legend(dfp_chw.columns, loc='best')
-            
+
             path_chwt = os.path.join(directory, 'chw temp.png')
             plt.savefig(path_chwt)
 
 
-    # report starts here !        
+    # report starts here !
 
             document.add_heading('ENERGY AUDIT REPORT FOR BUILIDNG COOLING SYSTEM', level=1).alignment=1
             document.add_heading('FOR', level=1).alignment=1
@@ -490,16 +490,16 @@ def profile():
             document.add_paragraph('        Table 3: Instrumentation Table')
 
             document.add_paragraph('5.0  Chiller Plant Performance Analysis (1 week data)')
-            document.add_paragraph('        Fig 5.1  Super-imposed plot of 24 hr Cooling Load Profile RT') 
+            document.add_paragraph('        Fig 5.1  Super-imposed plot of 24 hr Cooling Load Profile RT')
             document.add_paragraph('        Fig 5.2  Histogram of Cooling Load Occurrences')
-            document.add_paragraph('''        Fig 5.3  Super-imposed plot of daily chilled water supply/return 
+            document.add_paragraph('''        Fig 5.3  Super-imposed plot of daily chilled water supply/return
                            temperature degC''')
-            document.add_paragraph('''        Fig 5.4  Super-imposed plot of daily chilled water temperature 
+            document.add_paragraph('''        Fig 5.4  Super-imposed plot of daily chilled water temperature
                            difference degC''')
 
-            document.add_paragraph('''        Fig 5.5  Super-imposed plot of daily condenser water supply/return 
+            document.add_paragraph('''        Fig 5.5  Super-imposed plot of daily condenser water supply/return
                            temperature degC''')
-            document.add_paragraph('''        Fig 5.6  Super-imposed plot of daily condenser water temperature 
+            document.add_paragraph('''        Fig 5.6  Super-imposed plot of daily condenser water temperature
                            difference degC''')
             document.add_paragraph('        Fig 5.7  Super-imposed plot of daily chilled water GPM/RT ')
             document.add_paragraph('        Fig 5.8  Super-imposed plot of daily condenser water GPM/RT')
@@ -521,7 +521,7 @@ def profile():
             document.add_paragraph('        Table 5: Heat Balance Summary')
             document.add_paragraph('7.0  Schedule of space operating conditions')
             document.add_paragraph('        Table 6: Space Condition Schedule')
-            document.add_paragraph('APPENDIX')       
+            document.add_paragraph('APPENDIX')
             document.add_paragraph('Checklist of Plant Operating Condition (for best practices)')
             document.add_paragraph('     Table 7: Checklist of Plant Operating Condition')
             document.add_paragraph('')
@@ -537,7 +537,7 @@ def profile():
 
 
 
-    #  new page        
+    #  new page
             document.add_heading('1.0     Executive Summary & Recommendation', level=1)
             document.add_paragraph('')
             document.add_paragraph(('This report highlights the findings and recommendations obtained from the energy audit     performed at %s from %s to %s for 24 hrs.') %(building_name, audit_start, audit_end))
@@ -561,7 +561,7 @@ def profile():
             document.add_paragraph('')
             document.add_paragraph('')
             document.add_paragraph('')
-    # new page               
+    # new page
             document.add_heading('2.0     Building Information', level=1)
             document.add_paragraph('')
 
@@ -584,10 +584,10 @@ def profile():
             bldg_info.rows[3].cells[0].text = 'Gross floor area (GFA), m2'
             bldg_info.rows[3].cells[1].text = '%s' %gfa
             bldg_info.rows[4].cells[0].text = 'Air conditioned area, m2'
-            bldg_info.rows[4].cells[1].text = '%s' %ac_area  
+            bldg_info.rows[4].cells[1].text = '%s' %ac_area
             bldg_info.rows[5].cells[0].text = 'Number of guest rooms (for hotels/service apartments)'
             bldg_info.rows[5].cells[1].text = '%s' %room_qty
-    # new page            
+    # new page
             document.add_heading('3.0     Energy Audit Information For Building Cooling System', level=1)
             document.add_paragraph('')
             document.add_paragraph(('''%s was appointed by %s, owner of %s to be the Energy Auditor for the 3 yearly     submission of the operating system efficiency (OSE) of the centralized Chilled Water Plant. The report will     present the performance of centralized Chilled Water Plant efficiency based on the measurements from the     permanent instrumentations installed on site.''')%(auditor,owner,building_name))
@@ -607,74 +607,74 @@ def profile():
             audit_info.rows[3].cells[0].text = 'Date of submission in notice'
             audit_info.rows[3].cells[1].text = '%s' %submission
             audit_info.rows[4].cells[0].text = 'Data Logging Interval '
-            audit_info.rows[4].cells[1].text = '1 minute sampling' 
+            audit_info.rows[4].cells[1].text = '1 minute sampling'
             audit_info.rows[5].cells[0].text = 'Trend Logged Parameters'
             audit_info.rows[5].cells[1].text = '                               '
-    # new page        
+    # new page
             document.add_heading('5.0      Chiller Plant Performance Analysis (1 week data)', level=1)
             document.add_paragraph('')
             document.add_picture(path_clp, width=Inches(6.00))
             os.remove(path_clp)
-            
+
             document.add_paragraph('')
             document.add_picture(path_chwt, width=Inches(6.00))
             os.remove(path_chwt)
 
-    # new page 
+    # new page
 
             document.add_heading('6.0      Summary of Heat Balance', level=1)
 #             document.add_picture('heat balance percent.png', width=Inches(6.00))
-#             document.add_paragraph('System Level Heat Balance Plot').alignment=1  # 0 for left, 1 for center, 2 for right    
+#             document.add_paragraph('System Level Heat Balance Plot').alignment=1  # 0 for left, 1 for center, 2 for right
 
 
             table = document.add_table(rows=10, cols=3)
 
             row0 = table.rows[0]
-            row0.cells[1].text = 'Quantity' 
+            row0.cells[1].text = 'Quantity'
             row0.cells[2].text = 'Unit'
 
             row1 = table.rows[1]
-            row1.cells[0].text = 'Sum of total electrical energy used' 
+            row1.cells[0].text = 'Sum of total electrical energy used'
             row1.cells[1].text = '%d' %total_kwe
             row1.cells[2].text = 'kWh'
 
             row2 = table.rows[2]
-            row2.cells[0].text = 'Sum of total cooling produced' 
+            row2.cells[0].text = 'Sum of total cooling produced'
             row2.cells[1].text = '%d' %total_cooling
             row2.cells[2].text = 'RTh'
 
             row3 = table.rows[3]
-            row3.cells[0].text = 'Sum of total heat rejected' 
+            row3.cells[0].text = 'Sum of total heat rejected'
             row3.cells[1].text = '%d' %total_heat_reject
             row3.cells[2].text = 'RTh'
 
             row4 = table.rows[4]
-            row4.cells[0].text = 'Chiller Plant Efficiency' 
+            row4.cells[0].text = 'Chiller Plant Efficiency'
             row4.cells[1].text = '%s' %total_cooling
             row4.cells[2].text = 'kW/RT'
 
             row5 = table.rows[5]
-            row5.cells[0].text = 'Total Heat Balance Data Count' 
+            row5.cells[0].text = 'Total Heat Balance Data Count'
             row5.cells[1].text = '%d' %total_count
             row5.cells[2].text = '-'
 
             row6 = table.rows[6]
-            row6.cells[0].text = 'Data Count > + 5% error ' 
+            row6.cells[0].text = 'Data Count > + 5% error '
             row6.cells[1].text = '%d' %exceed_5_percent_count
             row6.cells[2].text = '-'
 
             row7 = table.rows[7]
-            row7.cells[0].text = 'Data Count < - 5% error ' 
+            row7.cells[0].text = 'Data Count < - 5% error '
             row7.cells[1].text = '%d' %below_minus_5_percent_count
             row7.cells[2].text = '-'
 
             row8 = table.rows[8]
-            row8.cells[0].text = 'Data Count within +/-5% error ' 
-            row8.cells[1].text = '%d' %success_count 
+            row8.cells[0].text = 'Data Count within +/-5% error '
+            row8.cells[1].text = '%d' %success_count
             row8.cells[2].text = '-'
 
             row9 = table.rows[9]
-            row9.cells[0].text = '% Heat Balance within +/-5% error' 
+            row9.cells[0].text = '% Heat Balance within +/-5% error'
             row9.cells[1].text = '%s' %percent_heatbal_plusminus5percent
             row9.cells[2].text = '%'
 
@@ -682,11 +682,11 @@ def profile():
 
             document.add_heading('7.0      Schedule of space operating conditions', level=1)
 
-            document.save(os.path.join(directory, 'report.docx'))   
+            document.save(os.path.join(directory, 'report.docx'))
     #         document.save('report.odt')
         return render_template('profile.html')
-    
-    
+
+
 
 # In[72]:
 
@@ -779,10 +779,7 @@ def signout():
 
 if __name__ == "__main__":
 #     app.debug=True
-    app.run()
+    app.run(port=33507)
 
 
 # In[ ]:
-
-
-
