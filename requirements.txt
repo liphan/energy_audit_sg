@@ -1,6 +1,6 @@
 appdirs==1.4.3
 blinker==1.4
-flask==0.12.2==py27_0
+Flask==0.12.2==py27_0
 Flask-Mail==0.9.1
 Flask-SQLAlchemy==2.2
 Flask-WTF==0.14.2
