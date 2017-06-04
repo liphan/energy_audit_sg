@@ -314,8 +314,8 @@ def profile():
 
 
     # prepare pandas dataframe for plots
-            directory = os.path.dirname(path)
-            abs_path = os.path.abspath(path)
+            directory = os.path.dirname('%s'%path)
+            abs_path = os.path.abspath('%s'%path)
             df = pd.read_csv(abs_path)
 
             df['date'] = pd.to_datetime(df['date'])
