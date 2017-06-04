@@ -4,6 +4,7 @@
 # In[4]:
 
 import os
+import numpy
 import pandas as pd
 
 import matplotlib
@@ -779,7 +780,8 @@ def signout():
 
 if __name__ == "__main__":
 #     app.debug=True
-    app.run(port=33507)
+    app.run()
+    # app.run(port=33507)
 
 
 # In[ ]:
