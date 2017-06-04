@@ -4,7 +4,7 @@
 # In[4]:
 
 import os
-import numpy
+
 import pandas as pd
 
 import matplotlib
