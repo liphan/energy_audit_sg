@@ -269,7 +269,7 @@ def profile():
 
 
         if request.method == "POST":
-            path = request.files['file location']
+            path = request.form['file location']
             # path = request.form['file location']
             ref = request.form['project ref']
             building_name = request.form['building name']
@@ -316,7 +316,7 @@ def profile():
 
     # prepare pandas dataframe for plots
             directory = os.path.dirname(path)
-            path_ = os.path.join('path')
+            path_ = os.path.join(path)
             # abs_path = os.path.abspath(path_)
             df = pd.read_csv(path_)
 
