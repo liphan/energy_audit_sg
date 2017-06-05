@@ -318,7 +318,10 @@ def profile():
             # directory = os.path.dirname(path)
             path_ = os.path.join(path)
             abs_path = os.path.abspath(path_)
-            df = pd.read_csv(abs_path)
+            with open(abs_path) as f:
+                df = pd.read_csv(f)
+
+            # df = pd.read_csv(abs_path)
             directory = os.path.dirname(abs_path)
 
             df['date'] = pd.to_datetime(df['date'])
