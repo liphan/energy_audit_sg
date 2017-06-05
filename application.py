@@ -319,7 +319,8 @@ def profile():
             path_ = os.path.join(path)
             abs_path = os.path.abspath(path_)
             with open(abs_path) as f:
-                df = pd.read_csv(f)
+                file_content = f.read()
+                df = pd.read_csv(file_content)
 
             # df = pd.read_csv(abs_path)
             directory = os.path.dirname(abs_path)
