@@ -314,9 +314,10 @@ def profile():
 
 
     # prepare pandas dataframe for plots
-            directory = os.path.dirname('%s'%path)
-            abs_path = os.path.abspath('%s'%path)
-            df = pd.read_csv(abs_path)
+            directory = os.path.dirname(path)
+            path_ = os.path.join(path)
+            # abs_path = os.path.abspath(path_)
+            df = pd.read_csv(path_)
 
             df['date'] = pd.to_datetime(df['date'])
             df['time'] = pd.to_datetime(df['time']).dt.strftime('%H:%M:%S')
