@@ -269,7 +269,8 @@ def profile():
 
 
         if request.method == "POST":
-            path = request.form['file location']
+            path = request.file['file location']
+            # path = request.form['file location']
             ref = request.form['project ref']
             building_name = request.form['building name']
             building_address = request.form['building address']
@@ -315,9 +316,9 @@ def profile():
 
     # prepare pandas dataframe for plots
             directory = os.path.dirname(path)
-            path_ = os.path.join(path)
+            # path_ = os.path.join('path')
             # abs_path = os.path.abspath(path_)
-            df = pd.read_csv(path_)
+            df = pd.read_csv(path)
 
             df['date'] = pd.to_datetime(df['date'])
             df['time'] = pd.to_datetime(df['time']).dt.strftime('%H:%M:%S')
