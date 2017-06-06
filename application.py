@@ -759,18 +759,17 @@ def signin():
     form = SigninForm()
 
     if 'email' in session:
-
-        # return redirect(url_for('profile'))
-        if 'email' not in session:
-            return redirect(url_for('signin'))
-
-        user = User.query.filter_by(email = session['email']).first()
-
-        if user is None:
-            return redirect(url_for('signin'))
-        else:
-    #         return render_template('profile.html')
-            return redirect(url_for('upload'))
+        return redirect(url_for('upload'))
+    #     if 'email' not in session:
+    #         return redirect(url_for('signin'))
+    #
+    #     user = User.query.filter_by(email = session['email']).first()
+    #
+    #     if user is None:
+    #         return redirect(url_for('signin'))
+    #     else:
+    # #         return render_template('profile.html')
+    #         return redirect(url_for('upload'))
 
 
     if request.method == 'POST':
