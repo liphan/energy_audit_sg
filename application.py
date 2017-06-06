@@ -292,6 +292,17 @@ def signup():
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
+    if 'email' not in session:
+        return redirect(url_for('signin'))
+
+    user = User.query.filter_by(email = session['email']).first()
+
+    if user is None:
+        return redirect(url_for('signin'))
+    else:
+#         return render_template('profile.html')
+        return redirect(url_for('upload'))
+
     if request.method == 'POST':
         f = request.files['file_location']
         # path_ = f.read()
@@ -300,6 +311,16 @@ def upload():
 
 @app.route('/entries', methods=['GET', 'POST'])
 def entries():
+    if 'email' not in session:
+        return redirect(url_for('signin'))
+
+    user = User.query.filter_by(email = session['email']).first()
+
+    if user is None:
+        return redirect(url_for('signin'))
+    else:
+#         return render_template('profile.html')
+        return redirect(url_for('entries'))
 
     if request.method == "POST":
         # path = request.form['file location']
