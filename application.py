@@ -301,7 +301,7 @@ def upload():
         return redirect(url_for('signin'))
     else:
 #         return render_template('profile.html')
-        return redirect(url_for('upload'))
+        # return redirect(url_for('upload'))
 
         if request.method == 'POST':
             f = request.files['file_location']
@@ -320,7 +320,7 @@ def entries():
         return redirect(url_for('signin'))
     else:
 #         return render_template('profile.html')
-        return redirect(url_for('entries'))
+        # return redirect(url_for('entries'))
 
         if request.method == "POST":
             # path = request.form['file location']
