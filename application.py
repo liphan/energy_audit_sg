@@ -306,7 +306,7 @@ def upload():
         if request.method == 'POST':
             f = request.files['file_location']
             # path_ = f.read()
-        return redirect(url_for('entries'))
+            return redirect(url_for('entries'))
 
 
 @app.route('/entries', methods=['GET', 'POST'])
