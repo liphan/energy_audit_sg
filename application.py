@@ -725,7 +725,7 @@ def entries():
 
         document.save(os.path.join(directory, 'report.docx'))
 #         document.save('report.odt')
-    return render_template('profile.html')
+    return render_template('home.html')
 
 
 
@@ -738,14 +738,36 @@ def signin():
     form = SigninForm()
 
     if 'email' in session:
-        return redirect(url_for('profile'))
+
+        # return redirect(url_for('profile'))
+        if 'email' not in session:
+            return redirect(url_for('signin'))
+
+        user = User.query.filter_by(email = session['email']).first()
+
+        if user is None:
+            return redirect(url_for('signin'))
+        else:
+    #         return render_template('profile.html')
+            return redirect(url_for('upload'))
+
 
     if request.method == 'POST':
         if form.validate() == False:
             return render_template('signin.html', form=form)
         else:
             session['email'] = form.email.data
-            return redirect(url_for('profile'))
+            # return redirect(url_for('profile'))
+            if 'email' not in session:
+                return redirect(url_for('signin'))
+
+            user = User.query.filter_by(email = session['email']).first()
+
+            if user is None:
+                return redirect(url_for('signin'))
+            else:
+        #         return render_template('profile.html')
+                return redirect(url_for('upload'))
 
     elif request.method == 'GET':
         return render_template('signin.html', form=form)
