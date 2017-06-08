@@ -5,6 +5,12 @@
 
 import os
 
+import sys
+if sys.version_info[0] < 3:        # check python version
+    from StringIO import StringIO  # https://stackoverflow.com/questions/22604564/how-to-create-a-pandas-dataframe-from-string
+else:
+    from io import StringIO
+
 import pandas as pd
 
 import matplotlib
@@ -32,8 +38,12 @@ font = run.font
 # In[66]:
 # import psycopg2
 
-from flask import Flask, render_template, flash, request, url_for, redirect, session
+from flask import Flask, render_template, flash, request, url_for, redirect, session, send_file
 from flask_wtf import Form
+
+# from flask_wtf import FlaskForm
+# from flask_wtf.file import FileField, FileRequired, FileAllowed
+
 from wtforms import TextField, TextAreaField, SubmitField, validators, ValidationError, PasswordField, StringField
 from wtforms import BooleanField
 #from wtforms_alchemy import PhoneNumberField
@@ -69,13 +79,16 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:admin@localhost:5432/audit'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://ynmfoitwdrfufl:fcdc5a2eff67d02812cab4bda26e1bff1d4b050aa09b54c0b7c730ea93a5c0b5@ec2-54-221-255-153.compute-1.amazonaws.com:5432/d6rmmhfa7ijsat?sslmode=require'   # ?sslmode=require
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:admin@localhost:5432/audit'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://ynmfoitwdrfufl:fcdc5a2eff67d02812cab4bda26e1bff1d4b050aa09b54c0b7c730ea93a5c0b5@ec2-54-221-255-153.compute-1.amazonaws.com:5432/d6rmmhfa7ijsat?sslmode=require'   # ?sslmode=require
 #from models import db
 db = SQLAlchemy(app)
 
 # db.create_all()
 # db.session.commit()
+UPLOAD_FOLDER = '/path/to/the/uploads'
+ALLOWED_EXTENSIONS = set(['csv'])
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -182,6 +195,15 @@ class ContactForm(Form):
     submit = SubmitField("Send")
 
 
+# class UploadForm(FlaskForm):
+#     datafile = FileField('your csv', validators=[FileRequired(), FileAllowed(['csv'], 'csv file only!')])
+#
+#     def __init__(self, *args, **kwargs):
+#         Form.__init__(self, *args, **kwargs)
+#
+#     def validate(self):
+#         if not Form.validate(self):
+#             return False
 
 # In[69]:
 
@@ -229,7 +251,7 @@ def signup():
     form = SignupForm()
 
     if 'email' in session:
-        return redirect(url_for('upload'))
+        return redirect(url_for('entries'))
     #     if 'email' not in session:
     #         return redirect(url_for('signin'))
     #
@@ -255,7 +277,7 @@ def signup():
             db.session.commit()
             session['email'] = newuser.email
 #             return "[1] Create a new user [2] sign in the user [3] redirect to the user's profile"
-            return redirect(url_for('upload'))
+            return redirect(url_for('entries'))
         #     if 'email' not in session:
         #         return redirect(url_for('signin'))
         #
@@ -289,24 +311,55 @@ def signup():
 #     else:
 # #         return render_template('profile.html')
 #         return redirect(url_for('upload'))
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
-@app.route('/upload', methods=['GET', 'POST'])
-def upload():
-    if 'email' not in session:
-        return redirect(url_for('signin'))
+# @app.route('/upload', methods=['GET', 'POST'])
+# def upload():
+#     if 'email' not in session:
+#         return redirect(url_for('signin'))
+#
+#     user = User.query.filter_by(email = session['email']).first()
+#
+#     if user is None:
+#         return redirect(url_for('signin'))
+#     else:
+#         if request.method == 'POST':
+#             f = request.files['file_location']
+#             if f and allowed_file(f.filename):
+#                 filename = secure_filename(f.filename)
+#                 # f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+#             return redirect(url_for('entries'))
 
-    user = User.query.filter_by(email = session['email']).first()
 
-    if user is None:
-        return redirect(url_for('signin'))
-    else:
-#         return render_template('profile.html')
-        # return redirect(url_for('upload'))
+# @app.route('/upload', methods=['GET', 'POST'])
+# def upload():
+#     if 'email' not in session:
+#         return redirect(url_for('signin'))
+#
+#     user = User.query.filter_by(email = session['email']).first()
+#
+#     if user is None:
+#         return redirect(url_for('signin'))
+#     else:
+# #         return render_template('profile.html')
+#         # return redirect(url_for('upload'))
+#
+#         if request.method == 'POST':
+#             f = request.files['file_location']
+#             # path_ = f.read()
+#             return redirect(url_for('entries'))
 
-        if request.method == 'POST':
-            f = request.files['file_location']
-            # path_ = f.read()
-            return redirect(url_for('entries'))
+        # if form.validate_on_submit():
+        #     f = form.datafile.data
+        #     filename = secure_filename(f.filename)
+        #     f.save(os.path.join(
+        #         app.instance_path, 'photos', filename
+        #     ))
+        #     return redirect(url_for('entries'))
+        #
+        # return render_template('upload.html', form=form)
 
 
 @app.route('/entries', methods=['GET', 'POST'])
@@ -323,6 +376,11 @@ def entries():
         # return redirect(url_for('entries'))
 
         if request.method == "POST":
+            f = request.files['file_location']
+            if f and allowed_file(f.filename):
+                filename = secure_filename(f.filename)
+                # file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                file_content = f.read()
             # path = request.form['file location']
             # path = request.form['file location']
             ref = request.form['project ref']
@@ -373,11 +431,12 @@ def entries():
             # path_ = os.path.join(path)
             # abs_path = os.path.abspath(path_)
             # with open(abs_path) as f:
-            file_content = f.read()
-            df = pd.read_csv(file_content)
+            DATA = StringIO(file_content)
+            # df = pd.read_csv(file_content)
+            df = pd.read_csv(DATA, sep=',', header=0, parse_dates=True, tupleize_cols=False, error_bad_lines=False, warn_bad_lines=True, skip_blank_lines=True)
 
             # df = pd.read_csv(abs_path)
-            directory = os.path.dirname(file_location)
+            directory = os.path.dirname('file_location')
 
             df['date'] = pd.to_datetime(df['date'])
             df['time'] = pd.to_datetime(df['time']).dt.strftime('%H:%M:%S')
@@ -744,9 +803,14 @@ def entries():
 
             document.add_heading('7.0      Schedule of space operating conditions', level=1)
 
-            document.save(os.path.join(directory, 'report.docx'))
+            # document.save(os.path.join(directory, 'report.docx'))
     #         document.save('report.odt')
-        return render_template('home.html')
+            f = StringIO()      # https://stackoverflow.com/questions/27029933/generating-word-docs-with-flask
+            document.save(f)    # http://flask.pocoo.org/snippets/32/
+            length = f.tell()
+            f.seek(0)
+            return send_file(f, as_attachment=True, attachment_filename='report.docx')
+        return render_template('entries.html')
 
 
 
@@ -759,7 +823,7 @@ def signin():
     form = SigninForm()
 
     if 'email' in session:
-        return redirect(url_for('upload'))
+        return redirect(url_for('entries'))
     #     if 'email' not in session:
     #         return redirect(url_for('signin'))
     #
@@ -777,17 +841,17 @@ def signin():
             return render_template('signin.html', form=form)
         else:
             session['email'] = form.email.data
-            # return redirect(url_for('profile'))
-            if 'email' not in session:
-                return redirect(url_for('signin'))
-
-            user = User.query.filter_by(email = session['email']).first()
-
-            if user is None:
-                return redirect(url_for('signin'))
-            else:
-        #         return render_template('profile.html')
-                return redirect(url_for('upload'))
+            return redirect(url_for('entries'))
+        #     if 'email' not in session:
+        #         return redirect(url_for('signin'))
+        #
+        #     user = User.query.filter_by(email = session['email']).first()
+        #
+        #     if user is None:
+        #         return redirect(url_for('signin'))
+        #     else:
+        # #         return render_template('profile.html')
+        #         return redirect(url_for('entries'))
 
     elif request.method == 'GET':
         return render_template('signin.html', form=form)

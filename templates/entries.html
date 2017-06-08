@@ -3,13 +3,12 @@
   <div class="jumbo">
     <h2>Entries<h2>
     <h3>This is {{ session['email'] }}'s entries page<h3>
-
       <!-- <div class="col-sm-8"> -->
         <h1>Enter Building Information</h1>
 
-        <form role="form" method='POST' action='{{ url_for('entries') }}'>
+        <form role="form" method='POST' action='{{ url_for('entries') }}' enctype = "multipart/form-data">
           <div class="form-group">
-            <!-- <input type="text" name="file location" class="form-control" placeholder="location path of data file" style="max-width: 300px;" autofocus required> -->
+            <input type="file" name="file_location" class="form-control" placeholder="location path of data file" style="max-width: 300px;" autofocus required>
             <input type="text" name="project ref" class="form-control" placeholder="project reference indicated in CORENET submission" style="max-width: 300px;" autofocus required>
             <input type="text" name="building name" class="form-control" placeholder="name of building" style="max-width: 300px;" autofocus required>
             <input type="text" name="building address" class="form-control" placeholder="address of building" style="max-width: 300px;" autofocus required>
