@@ -39,7 +39,7 @@ header h1.logo:hover {
 
 /*#picture-container{
  /*border: 1px solid black;*/
- width: 400px;
+ /*width: 400px;
  margin: 0, auto;
  }
 
@@ -82,6 +82,15 @@ h3 {
   text-align: center;
   letter-spacing: -1px;
   color: #999;
+}
+
+p {
+    display: block;
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    margin-left: 0;
+    margin-right: 0;
+    text-align: center;
 }
 
 /*
