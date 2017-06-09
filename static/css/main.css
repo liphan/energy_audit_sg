@@ -33,6 +33,27 @@ header h1.logo:hover {
 /*
  * Center the body content
  */
+ div.center iframe{
+     display: block; margin: 0 auto;
+ }
+
+/*#picture-container{
+ /*border: 1px solid black;*/
+ width: 400px;
+ margin: 0, auto;
+ }
+
+ #image3{
+ width: 20%
+ }
+
+#image2{
+width: 35%
+}
+
+#image1{
+width: 70%
+}*/
 
 .container {
   width: 940px;
